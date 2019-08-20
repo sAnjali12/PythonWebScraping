@@ -22,4 +22,4 @@ def scrape_top_list(trs):
                 movielist.append((movieData))
         return (movielist)
 movieDetaile = scrape_top_list(trs)
-pprint (movieDetaile)
+# pprint (movieDetaile)
