@@ -1,6 +1,5 @@
 from pprint import pprint
-from sameYear import  years
-from sameYear import allSame_year
+from sameYear import*
 from movieDetails import movieDetaile
 
 def yearDecade(years,movies):

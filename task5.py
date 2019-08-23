@@ -1,0 +1,2 @@
+from oneMoviedetails import movie
+from movieDetails import movieDetaile
