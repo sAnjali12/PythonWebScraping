@@ -1,34 +1,40 @@
 import requests
 from bs4 import BeautifulSoup
+from movieCast import*
 from pprint import pprint
 
-url = ("https://www.imdb.com/title/tt0367495/")
-def responceData(url):
-        responce = requests.get(url).text
-        soup_data = BeautifulSoup(responce, "html.parser")
+# url = ("https://www.imdb.com/title/tt0367495/")
+def responceData(url1):
+        responce = requests.get(url1)
+        soup_data = BeautifulSoup(responce.text, "html.parser")
         return soup_data
-soup = responceData(url)
+# soup = responceData(url)
 
 def movieName(data):
-        div = soup.find("div",class_= "title_wrapper").h1.get_text()
+        div = data.find("div",class_= "title_wrapper").h1.get_text()
         name = div.split()
         movieName = ("").join(name[:-1])
         return movieName
 
 def posterImage(data):
-        div = soup.find("div",class_="slate_wrapper")
-        image = div.img["src"]
-        return image
+        try:
+                div = data.find("div",class_="poster")
+                image = div.img["src"]
+                return image
+        except AttributeError:
+                print("---------")
 
 
-divBio = soup.find("div",class_="plot_summary")
+# divBio = soup.find("div",class_="plot_summary")
 def movieBio(data):
+        divBio = data.find("div",class_="plot_summary")
         movieBio = divBio.find("div",class_="summary_text").get_text()
         summaryText = movieBio.strip("\n ")
         return summaryText
 
 
 def moveiDirector(data):
+        divBio = data.find("div",class_="plot_summary")
         divDirector = divBio.find("div",class_="credit_summary_item")
         directorData = divDirector.find_all("a")
         directorName = []
@@ -40,14 +46,14 @@ def moveiDirector(data):
 
 
 def movietime(data):
-        divRuntime = soup.find("div",class_="subtext").time["datetime"]
+        divRuntime = data.find("div",class_="subtext").time["datetime"]
         movieRuntime = divRuntime[2:5]
-        runTime = int(movieRuntime)
+        runTime = (movieRuntime)
         return runTime
 
 
 def movieGenre(data):
-        divGenre =  soup.find("div",class_="subtext")
+        divGenre =  data.find("div",class_="subtext")
         genreData = divGenre.find_all("a")
         genreName = []
         for genreIndex in genreData:
@@ -58,7 +64,7 @@ def movieGenre(data):
 
 
 def movieLanguage(data):
-        divArticle = soup.find("div",class_="article",id="titleDetails")
+        divArticle = data.find("div",class_="article",id="titleDetails")
         divCountry = divArticle.find_all("div",class_="txt-block")
         for index in divCountry:
                 if "Country" in index.text:
@@ -76,19 +82,12 @@ def movieLanguage(data):
 
 def scrape_movie_details(moviUrl):
         soup = responceData(moviUrl)
-        
         name = movieName(soup)
-
         image = posterImage(soup)
-        
-        bio = movieBio(divBio)
-
-        director = moveiDirector(divBio)
-
+        bio = movieBio(soup)
+        director = moveiDirector(soup)
         runtime = movietime(soup)
-
         genre = movieGenre(soup)
-
         language = movieLanguage(soup)
 
         movieDetails = {}
@@ -103,4 +102,4 @@ def scrape_movie_details(moviUrl):
         return movieDetails
 url = ("https://www.imdb.com/title/tt0367495/")
 movie = scrape_movie_details(url)
-pprint(movie)
+# pprint(movie)
